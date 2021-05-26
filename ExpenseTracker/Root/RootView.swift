@@ -52,7 +52,14 @@ struct RootView: View {
                             TransactionListItemView(transaction: transaction)
                                 .listRowInsets(EdgeInsets())
                                 .background(Color.systemWhite)
-                                .onTapGesture { model.selectedTransaction = transaction }
+                                .onTapGesture {
+                                    model.editViewPresentation = .edit(
+                                        transaction: transaction,
+                                        listener: .init(
+                                            onFinished: { _ in model.editViewPresentation = nil }
+                                        )
+                                    )
+                                }
                         }
                         .onDelete { indexSet in
                             indexSet.forEach { model.delete(transaction: transactions[$0]) }
@@ -72,29 +79,20 @@ struct RootView: View {
                         .cornerRadius(22)
                         .onTapGesture {
                             let currentTime = Calendar.current.dateComponents([.hour, .minute, .second], from: Date())
-                            model.selectedTransaction = Transaction(
-                                value: 0,
-                                currencyCode: "KRW",
-                                category: Category.etc.rawValue,
-                                title: "",
-                                detail: "",
+                            model.editViewPresentation = .new(
                                 createdAt: Calendar.current.date(
                                     bySettingHour: currentTime.hour ?? 0,
                                     minute: currentTime.minute ?? 0,
                                     second: currentTime.second ?? 0,
                                     of: model.selectedDate ?? Date()
+                                ) ?? Date(),
+                                listener: .init(
+                                    onFinished: { _ in model.editViewPresentation = nil }
                                 )
                             )
                         }
-                        .sheet(item: $model.selectedTransaction, content: { transaction in
-                            TransactionEditView(
-                                model: .edit(
-                                    transaction: transaction,
-                                    listener: .init(
-                                        onFinished: { _ in model.selectedTransaction = nil }
-                                    )
-                                )
-                            )
+                        .sheet(item: $model.editViewPresentation, content: {
+                            TransactionEditView(model: $0.viewModel)
                         })
                 }
                 .padding(EdgeInsets(top: 0, leading: 0, bottom: 20, trailing: 20))
@@ -109,7 +107,7 @@ extension RootView {
         @Published var transactionsByDay: [Int: [Transaction]]
         @Published var transactionsByDate: [Date: [Transaction]]
         @Published var selectedDate: Date?
-        @Published var selectedTransaction: Transaction?
+        @Published var editViewPresentation: TransactionEditView.Presentation?
 
         var titleText: String {
             titleDateFormatter.string(from: startDateComponentsOfCurrent.date ?? Date())
@@ -160,7 +158,7 @@ extension RootView {
         }
 
         func delete(transaction: Transaction) {
-            TransactionStorage.shared.delete(id: transaction.uniqueIdentifier)
+            TransactionStorage.shared.delete(id: transaction.id)
         }
     }
 }

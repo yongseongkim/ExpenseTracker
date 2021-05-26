@@ -8,6 +8,36 @@
 import SwiftUI
 
 struct TransactionEditView: View {
+    enum Presentation: Identifiable {
+        var id: String {
+            switch self {
+            case .new: return "new"
+            case .edit(let transaction, _): return transaction.id
+            }
+        }
+
+        var viewModel: ViewModel {
+            switch self {
+            case .new(let createdAt, let listener):
+                return ViewModel(createdAt: createdAt, listener: listener)
+            case .edit(let transaction, let listener):
+                return ViewModel(
+                    targetTransactionId: transaction.id,
+                    value: transaction.value,
+                    isExpense: transaction.isExpense,
+                    selectedCategory: Category.from(raw: transaction.category),
+                    title: transaction.title,
+                    detail: transaction.detail,
+                    createdAt: transaction.createdAt,
+                    listener: listener
+                )
+            }
+        }
+
+        case new(createdAt: Date, listener: TransactionEditView.Listener)
+        case edit(transaction: Transaction, listener: TransactionEditView.Listener)
+    }
+
     @ObservedObject var model: ViewModel
 
     var body: some View {
@@ -153,25 +183,38 @@ extension TransactionEditView {
         @Published var title: String
         @Published var detail: String
         @Published var createdAt: Date
+
+        let targetTransactionId: String?
         let listener: Listener
 
         init(
-            value: Double,
-            isExpense: Bool,
-            selectedCategory: Category,
-            title: String,
-            detail: String,
-            createdAt: Date,
+            targetTransactionId: String? = nil,
+            value: Double? = nil,
+            isExpense: Bool? = nil,
+            selectedCategory: Category? = nil,
+            title: String? = nil,
+            detail: String? = nil,
+            createdAt: Date? = nil,
             listener: Listener
         ) {
-            self.value = abs(value)
-            self.isExpense = isExpense
-            self.selectedCategory = selectedCategory
-            self.title = title
-            self.detail = detail
-            self.createdAt = createdAt
-            self.listener = listener
-
+            self.targetTransactionId = targetTransactionId
+            if let targetId = targetTransactionId, let existed = TransactionStorage.shared.fetch(id: targetId) {
+                self.value = value ?? abs(existed.value)
+                self.isExpense = isExpense ?? existed.isExpense
+                self.selectedCategory = selectedCategory ?? Category.from(raw: existed.category)
+                self.title = title ?? existed.title ?? ""
+                self.detail = detail ?? existed.detail ?? ""
+                self.createdAt = createdAt ?? existed.createdAt
+                self.listener = listener
+            } else {
+                self.value = abs(value ?? 0)
+                self.isExpense = isExpense ?? false
+                self.selectedCategory = selectedCategory ?? .etc
+                self.title = title ?? ""
+                self.detail = detail ?? ""
+                self.createdAt = createdAt ?? Date()
+                self.listener = listener
+            }
         }
 
         func confirm() {
@@ -179,6 +222,7 @@ extension TransactionEditView {
                 return
             }
             let target: Transaction = .init(
+                id: targetTransactionId,
                 value: isExpense ? -value : value,
                 currencyCode: "KRW",
                 category: selectedCategory.rawValue,
@@ -196,34 +240,19 @@ extension TransactionEditView {
     }
 }
 
-extension TransactionEditView.ViewModel {
-    static func new(createdAt: Date = Date(), listener: TransactionEditView.Listener) -> TransactionEditView.ViewModel {
-        return .init(
-            value: 0,
-            isExpense: true,
-            selectedCategory: .etc,
-            title: "",
-            detail: "",
-            createdAt: createdAt,
-            listener: listener
-        )
-    }
-
-    static func edit(transaction: Transaction, listener: TransactionEditView.Listener) -> TransactionEditView.ViewModel {
-        return .init(
-            value: transaction.value,
-            isExpense: transaction.isExpense,
-            selectedCategory: Category.allCases.first(where: { $0.rawValue == transaction.category }) ?? .etc,
-            title: transaction.title ?? "",
-            detail: transaction.detail ?? "",
-            createdAt: transaction.createdAt,
-            listener: listener
-        )
-    }
-}
-
 struct TransactionEditView_Previews: PreviewProvider {
     static var previews: some View {
-        TransactionEditView(model: .new(listener: .init(onFinished: { _ in })))
+        TransactionEditView(
+            model: .init(
+                value: 100,
+                isExpense: true,
+                selectedCategory: .etc,
+                title: "title",
+                detail: "detail",
+                createdAt: Date(),
+                listener: .init(onFinished: { _ in }
+                )
+            )
+        )
     }
 }

@@ -40,9 +40,16 @@ class TransactionStorage: NSObject {
         }
     }
 
+    func fetch(id: String) -> Transaction? {
+        let request: NSFetchRequest<TransactionMO> = TransactionMO.fetchRequest()
+        request.predicate = NSPredicate(format: "id == %@", id)
+        let result = try? persistentController.context.fetch(request)
+        return result?.first.map { Transaction(with: $0) }
+    }
+
     func upsert(transaction: Transaction) {
         let request: NSFetchRequest<TransactionMO> = TransactionMO.fetchRequest()
-        request.predicate = NSPredicate(format: "uniqueIdentifier == %@", transaction.uniqueIdentifier as CVarArg)
+        request.predicate = NSPredicate(format: "id == %@", transaction.id)
         let result = try? persistentController.context.fetch(request)
         if let fetched = result?.first {
             fetched.value = transaction.value
@@ -52,7 +59,7 @@ class TransactionStorage: NSObject {
             fetched.detail = transaction.detail
         } else {
             let mo = TransactionMO(context: persistentController.context)
-            mo.uniqueIdentifier = transaction.uniqueIdentifier
+            mo.id = transaction.id
             mo.value = transaction.value
             mo.currencyCode = transaction.currencyCode
             mo.category = transaction.category
@@ -65,7 +72,7 @@ class TransactionStorage: NSObject {
 
     func delete(id: String) {
         let request: NSFetchRequest<TransactionMO> = TransactionMO.fetchRequest()
-        request.predicate = NSPredicate(format: "uniqueIdentifier == %@", id as CVarArg)
+        request.predicate = NSPredicate(format: "id == %@", id as CVarArg)
         let result = try? persistentController.context.fetch(request)
         if let fetched = result?.first {
             persistentController.context.delete(fetched)

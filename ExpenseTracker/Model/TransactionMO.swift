@@ -18,7 +18,7 @@ extension TransactionMO {
         return NSFetchRequest<TransactionMO>(entityName: "Transaction")
     }
 
-    @NSManaged public var uniqueIdentifier: String
+    @NSManaged public var id: String
     @NSManaged public var category: String?
     @NSManaged public var createdAt: Date?
     @NSManaged public var currencyCode: String?

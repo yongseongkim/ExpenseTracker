@@ -22,6 +22,10 @@ enum Category: String, CaseIterable {
 }
 
 extension Category {
+    static func from(raw: String?) -> Category {
+        return Category(rawValue: raw ?? "") ?? .etc
+    }
+
     var displayName: String {
         switch self {
         case .meal:

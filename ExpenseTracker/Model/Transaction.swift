@@ -7,8 +7,8 @@
 
 import Foundation
 
-struct Transaction {
-    let uniqueIdentifier: String
+struct Transaction: Identifiable {
+    let id: String
     let value: Double
     let currencyCode: String?
     let category: String?
@@ -16,8 +16,16 @@ struct Transaction {
     let detail: String?
     let createdAt: Date
 
-    init(value: Double, currencyCode: String?, category: String?, title: String?, detail: String?, createdAt: Date?) {
-        self.uniqueIdentifier = IdentifierGenerator.generate()
+    init(
+        id: String? = nil,
+        value: Double,
+        currencyCode: String?,
+        category: String?,
+        title: String?,
+        detail: String?,
+        createdAt: Date?
+    ) {
+        self.id = id ?? IdentifierGenerator.generate()
         self.value = value
         self.currencyCode = currencyCode
         self.category = category
@@ -27,7 +35,7 @@ struct Transaction {
     }
 
     init(with mo: TransactionMO) {
-        self.uniqueIdentifier = mo.uniqueIdentifier
+        self.id = mo.id
         self.value = mo.value
         self.currencyCode = mo.currencyCode
         self.category = mo.category
@@ -51,8 +59,4 @@ extension Transaction: CustomStringConvertible {
     var description: String {
         "\(String(describing: category)) \(value) at \(createdAt): \(String(describing: title)), \(String(describing: detail))"
     }
-}
-
-extension Transaction: Identifiable {
-    var id: String { uniqueIdentifier }
 }
