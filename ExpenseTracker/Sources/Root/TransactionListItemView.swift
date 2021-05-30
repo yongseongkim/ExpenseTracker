@@ -63,7 +63,7 @@ struct TransactionListItemView_Previews: PreviewProvider {
                     category: Category.entertainment.rawValue,
                     title: "라이엇 게임즈 코리아",
                     detail: "나만의 상점 스킨 구입",
-                    createdAt: DateComponents(calendar: .current, year: 2021, month: 3, day: 6, hour: 21, minute: 35).date!
+                    tradedAt: DateComponents(calendar: .current, year: 2021, month: 3, day: 6, hour: 21, minute: 35).date!
                 )
             )
             TransactionListItemView(
@@ -73,7 +73,7 @@ struct TransactionListItemView_Previews: PreviewProvider {
                     category: Category.etc.rawValue,
                     title: "읽어양득",
                     detail: "동아리 미션 완료금",
-                    createdAt: DateComponents(calendar: .current, year: 2021, month: 3, day: 1, hour: 22, minute: 40).date!
+                    tradedAt: DateComponents(calendar: .current, year: 2021, month: 3, day: 1, hour: 22, minute: 40).date!
                 )
             )
         }

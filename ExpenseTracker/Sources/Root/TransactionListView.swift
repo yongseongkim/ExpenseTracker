@@ -15,7 +15,7 @@ struct TransactionListView: View {
     init(transactions: [Transaction], listener: Listener) {
         var transactionsByDate: [Date: [Transaction]] = [:]
         transactions.forEach { t in
-            transactionsByDate[Calendar.current.startOfDay(for: t.createdAt), default: []].append(t)
+            transactionsByDate[Calendar.current.startOfDay(for: t.tradedAt), default: []].append(t)
         }
         self.transactionsByDate = transactionsByDate
         self.listener = listener
@@ -70,7 +70,7 @@ struct TransactionListView_Previews: PreviewProvider {
                 category: Category.gift.rawValue,
                 title: "라이엇 게임즈 코리아",
                 detail: "나만의 상점 스킨 구입",
-                createdAt: DateComponents(calendar: .current, year: 2021, month: 3, day: 6, hour: 21, minute: 35).date!
+                tradedAt: DateComponents(calendar: .current, year: 2021, month: 3, day: 6, hour: 21, minute: 35).date!
             ),
             .init(
                 value: -22474,
@@ -78,7 +78,7 @@ struct TransactionListView_Previews: PreviewProvider {
                 category: Category.gift.rawValue,
                 title: "to 김건우",
                 detail: "farewell 만찬 더치페이",
-                createdAt: DateComponents(calendar: .current, year: 2021, month: 3, day: 14, hour: 15, minute: 17).date!
+                tradedAt: DateComponents(calendar: .current, year: 2021, month: 3, day: 14, hour: 15, minute: 17).date!
             ),
             .init(
                 value: 19710,
@@ -86,7 +86,7 @@ struct TransactionListView_Previews: PreviewProvider {
                 category: Category.etc.rawValue,
                 title: "읽어양득",
                 detail: "동아리 미션 완료금",
-                createdAt: DateComponents(calendar: .current, year: 2021, month: 3, day: 1, hour: 22, minute: 40).date!
+                tradedAt: DateComponents(calendar: .current, year: 2021, month: 3, day: 1, hour: 22, minute: 40).date!
             ),
             .init(
                 value: 10000,
@@ -94,7 +94,7 @@ struct TransactionListView_Previews: PreviewProvider {
                 category: Category.etc.rawValue,
                 title: "제스티살룬",
                 detail: "와사비 새우 버거 2 + 갈릭 치즈 버거 + 치즈 프라이",
-                createdAt: DateComponents(calendar: .current, year: 2021, month: 3, day: 12, hour: 13, minute: 16).date!
+                tradedAt: DateComponents(calendar: .current, year: 2021, month: 3, day: 12, hour: 13, minute: 16).date!
             )
         ]
     }

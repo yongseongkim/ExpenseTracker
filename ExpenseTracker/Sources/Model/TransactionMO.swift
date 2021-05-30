@@ -20,11 +20,12 @@ extension TransactionMO {
 
     @NSManaged public var id: String
     @NSManaged public var category: String?
-    @NSManaged public var createdAt: Date?
+    @NSManaged public var createdAt: Date
+    @NSManaged public var tradedAt: Date
     @NSManaged public var currencyCode: String?
     @NSManaged public var detail: String?
     @NSManaged public var title: String?
-    @NSManaged public var value: Double
+    @NSManaged public var value: Int
 }
 
 extension TransactionMO : Identifiable {

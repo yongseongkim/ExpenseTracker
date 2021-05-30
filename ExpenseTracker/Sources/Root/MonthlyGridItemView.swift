@@ -9,7 +9,7 @@ import SwiftUI
 
 enum MonthlyGridItem {
     case space
-    case day(date: Date, expense: Double, income: Double)
+    case day(date: Date, expense: Int, income: Int)
 
     func isSame(otherDate: Date?) -> Bool {
         switch self {
@@ -54,7 +54,7 @@ struct MonthlyGridItemView: View {
         }
     }
 
-    private func content(date: Date, expense: Double, income: Double) -> some View {
+    private func content(date: Date, expense: Int, income: Int) -> some View {
         Group {
             if expense == 0 && income == 0 {
                 Text("•")

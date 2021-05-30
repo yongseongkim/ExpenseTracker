@@ -9,21 +9,22 @@ import Foundation
 
 struct Transaction: Identifiable {
     let id: String
-    let value: Double
+    let value: Int
     let currencyCode: String?
     let category: String?
     let title: String?
     let detail: String?
+    let tradedAt: Date
     let createdAt: Date
 
     init(
         id: String? = nil,
-        value: Double,
+        value: Int,
         currencyCode: String?,
         category: String?,
         title: String?,
         detail: String?,
-        createdAt: Date?
+        tradedAt: Date?
     ) {
         self.id = id ?? IdentifierGenerator.generate()
         self.value = value
@@ -31,7 +32,8 @@ struct Transaction: Identifiable {
         self.category = category
         self.title = title
         self.detail = detail
-        self.createdAt = createdAt ?? Date()
+        self.tradedAt = tradedAt ?? Date()
+        self.createdAt = Date()
     }
 
     init(with mo: TransactionMO) {
@@ -41,7 +43,8 @@ struct Transaction: Identifiable {
         self.category = mo.category
         self.title = mo.title
         self.detail = mo.detail
-        self.createdAt = mo.createdAt ?? Date()
+        self.tradedAt = mo.tradedAt
+        self.createdAt = mo.createdAt
     }
 }
 
@@ -57,6 +60,6 @@ extension Transaction {
 
 extension Transaction: CustomStringConvertible {
     var description: String {
-        "\(String(describing: category)) \(value) at \(createdAt): \(String(describing: title)), \(String(describing: detail))"
+        "\(String(describing: category)) \(value) at \(tradedAt): \(String(describing: title)), \(String(describing: detail))"
     }
 }

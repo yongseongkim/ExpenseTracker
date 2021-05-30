@@ -65,9 +65,9 @@ struct MonthlyGridView: View {
             }
             .padding(.bottom, 7)
             VStack(spacing: 0) {
-                ForEach(0..<self.items.count) { row in
+                ForEach(0..<self.items.count, id: \.self) { row in
                     HStack(spacing: 0) {
-                        ForEach(0..<self.items[row].count) { column in
+                        ForEach(0..<self.items[row].count, id: \.self) { column in
                             MonthlyGridItemView(
                                 item: self.items[row][column],
                                 isSelected: self.items[row][column].isSame(otherDate: self.selectedDate)
@@ -104,71 +104,71 @@ struct MonthlyGridView_Previews: PreviewProvider {
                 transactionsByDay: [
                     5: [
                         .init(
-                            value: Double(Int.random(in: -100000..<0)),
+                            value: Int.random(in: -100000..<0),
                             currencyCode: "KRW",
                             category: Category.allCases.randomElement()?.rawValue,
                             title: "title",
                             detail: "detail",
-                            createdAt: DateComponents(calendar: Calendar.current, year: 2021, month: 2, day: 5).date
+                            tradedAt: DateComponents(calendar: Calendar.current, year: 2021, month: 2, day: 5).date
                         ),
                         .init(
-                            value: Double(Int.random(in: -100000..<0)),
+                            value: Int.random(in: -100000..<0),
                             currencyCode: "KRW",
                             category: Category.allCases.randomElement()?.rawValue,
                             title: "title",
                             detail: "detail",
-                            createdAt: DateComponents(calendar: Calendar.current, year: 2021, month: 2, day: 13).date
+                            tradedAt: DateComponents(calendar: Calendar.current, year: 2021, month: 2, day: 13).date
                         ),
                         .init(
-                            value: Double(Int.random(in: -100000..<0)),
+                            value: Int.random(in: -100000..<0),
                             currencyCode: "KRW",
                             category: Category.allCases.randomElement()?.rawValue,
                             title: "title",
                             detail: "detail",
-                            createdAt: DateComponents(calendar: Calendar.current, year: 2021, month: 2, day: 26).date
+                            tradedAt: DateComponents(calendar: Calendar.current, year: 2021, month: 2, day: 26).date
                         )
                     ],
                     13: [
                         .init(
-                            value: Double(Int.random(in: 0..<100000)),
+                            value: Int.random(in: 0..<100000),
                             currencyCode: "KRW",
                             category: Category.allCases.randomElement()?.rawValue,
                             title: "title",
                             detail: "detail",
-                            createdAt: DateComponents(calendar: Calendar.current, year: 2021, month: 2, day: 5).date
+                            tradedAt: DateComponents(calendar: Calendar.current, year: 2021, month: 2, day: 5).date
                         ),
                         .init(
-                            value: Double(Int.random(in: 0..<100000)),
+                            value: Int.random(in: 0..<100000),
                             currencyCode: "KRW",
                             category: Category.allCases.randomElement()?.rawValue,
                             title: "title",
                             detail: "detail",
-                            createdAt: DateComponents(calendar: Calendar.current, year: 2021, month: 2, day: 13).date
+                            tradedAt: DateComponents(calendar: Calendar.current, year: 2021, month: 2, day: 13).date
                         ),
                         .init(
-                            value: Double(Int.random(in: 0..<100000)),
+                            value: Int.random(in: 0..<100000),
                             currencyCode: "KRW",
                             category: Category.allCases.randomElement()?.rawValue,
                             title: "title",
                             detail: "detail",
-                            createdAt: DateComponents(calendar: Calendar.current, year: 2021, month: 2, day: 26).date
+                            tradedAt: DateComponents(calendar: Calendar.current, year: 2021, month: 2, day: 26).date
                         )],
                     18: [
                         .init(
-                            value: Double(Int.random(in: -100000..<0)),
+                            value: Int.random(in: -100000..<0),
                             currencyCode: "KRW",
                             category: Category.allCases.randomElement()?.rawValue,
                             title: "title",
                             detail: "detail",
-                            createdAt: DateComponents(calendar: Calendar.current, year: 2021, month: 2, day: 5).date
+                            tradedAt: DateComponents(calendar: Calendar.current, year: 2021, month: 2, day: 5).date
                         ),
                         .init(
-                            value: Double(Int.random(in: 0..<100000)),
+                            value: Int.random(in: 0..<100000),
                             currencyCode: "KRW",
                             category: Category.allCases.randomElement()?.rawValue,
                             title: "title",
                             detail: "detail",
-                            createdAt: DateComponents(calendar: Calendar.current, year: 2021, month: 2, day: 18).date
+                            tradedAt: DateComponents(calendar: Calendar.current, year: 2021, month: 2, day: 18).date
                         )
                     ]
                 ],
@@ -182,71 +182,71 @@ struct MonthlyGridView_Previews: PreviewProvider {
                 transactionsByDay: [
                     5: [
                         .init(
-                            value: Double(Int.random(in: 0..<100000)),
+                            value: Int.random(in: 0..<100000),
                             currencyCode: "KRW",
                             category: Category.allCases.randomElement()?.rawValue,
                             title: "title",
                             detail: "detail",
-                            createdAt: DateComponents(calendar: Calendar.current, year: 2021, month: 2, day: 5).date
+                            tradedAt: DateComponents(calendar: Calendar.current, year: 2021, month: 2, day: 5).date
                         ),
                         .init(
-                            value: Double(Int.random(in: 0..<100000)),
+                            value: Int.random(in: 0..<100000),
                             currencyCode: "KRW",
                             category: Category.allCases.randomElement()?.rawValue,
                             title: "title",
                             detail: "detail",
-                            createdAt: DateComponents(calendar: Calendar.current, year: 2021, month: 2, day: 13).date
+                            tradedAt: DateComponents(calendar: Calendar.current, year: 2021, month: 2, day: 13).date
                         ),
                         .init(
-                            value: Double(Int.random(in: 0..<100000)),
+                            value: Int.random(in: 0..<100000),
                             currencyCode: "KRW",
                             category: Category.allCases.randomElement()?.rawValue,
                             title: "title",
                             detail: "detail",
-                            createdAt: DateComponents(calendar: Calendar.current, year: 2021, month: 2, day: 26).date
+                            tradedAt: DateComponents(calendar: Calendar.current, year: 2021, month: 2, day: 26).date
                         )
                     ],
                     13: [
                         .init(
-                            value: Double(Int.random(in: 0..<100000)),
+                            value: Int.random(in: 0..<100000),
                             currencyCode: "KRW",
                             category: Category.allCases.randomElement()?.rawValue,
                             title: "title",
                             detail: "detail",
-                            createdAt: DateComponents(calendar: Calendar.current, year: 2021, month: 2, day: 5).date
+                            tradedAt: DateComponents(calendar: Calendar.current, year: 2021, month: 2, day: 5).date
                         ),
                         .init(
-                            value: Double(Int.random(in: 0..<100000)),
+                            value: Int.random(in: 0..<100000),
                             currencyCode: "KRW",
                             category: Category.allCases.randomElement()?.rawValue,
                             title: "title",
                             detail: "detail",
-                            createdAt: DateComponents(calendar: Calendar.current, year: 2021, month: 2, day: 13).date
+                            tradedAt: DateComponents(calendar: Calendar.current, year: 2021, month: 2, day: 13).date
                         ),
                         .init(
-                            value: Double(Int.random(in: 0..<100000)),
+                            value: Int.random(in: 0..<100000),
                             currencyCode: "KRW",
                             category: Category.allCases.randomElement()?.rawValue,
                             title: "title",
                             detail: "detail",
-                            createdAt: DateComponents(calendar: Calendar.current, year: 2021, month: 2, day: 26).date
+                            tradedAt: DateComponents(calendar: Calendar.current, year: 2021, month: 2, day: 26).date
                         )],
                     18: [
                         .init(
-                            value: Double(Int.random(in: 0..<100000)),
+                            value: Int.random(in: 0..<100000),
                             currencyCode: "KRW",
                             category: Category.allCases.randomElement()?.rawValue,
                             title: "title",
                             detail: "detail",
-                            createdAt: DateComponents(calendar: Calendar.current, year: 2021, month: 2, day: 5).date
+                            tradedAt: DateComponents(calendar: Calendar.current, year: 2021, month: 2, day: 5).date
                         ),
                         .init(
-                            value: Double(Int.random(in: 0..<100000)),
+                            value: Int.random(in: 0..<100000),
                             currencyCode: "KRW",
                             category: Category.allCases.randomElement()?.rawValue,
                             title: "title",
                             detail: "detail",
-                            createdAt: DateComponents(calendar: Calendar.current, year: 2021, month: 2, day: 18).date
+                            tradedAt: DateComponents(calendar: Calendar.current, year: 2021, month: 2, day: 18).date
                         )
                     ]
                 ],
