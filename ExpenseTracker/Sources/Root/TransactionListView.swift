@@ -81,7 +81,7 @@ struct TransactionListView_Previews: PreviewProvider {
                 tradedAt: DateComponents(calendar: .current, year: 2021, month: 3, day: 14, hour: 15, minute: 17).date!
             ),
             .init(
-                value: 19710,
+                value: -19710,
                 currencyCode: "KRW",
                 category: Category.etc.rawValue,
                 title: "읽어양득",

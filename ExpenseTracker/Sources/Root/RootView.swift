@@ -42,23 +42,20 @@ struct RootView: View {
         List {
             VStack(spacing: 0) {
                 HStack(spacing: 0) {
-                    Text(model.titleText)
-                        .font(.system(size: 24))
-                        .fontWeight(.bold)
-                        .padding(.leading, 20)
-                        .onTapGesture { model.isMonthSelectorPrenseted = true }
-                    Spacer()
-                    VStack(spacing: 5) {
-                        Text(model.totalExpenseText)
-                            .font(.system(size: 18, weight: .bold))
-                            .foregroundColor(.systemBlack)
-                        Text(model.totalIncomeText)
-                            .font(.system(size: 18, weight: .bold))
-                            .foregroundColor(.blue)
+                    HStack(spacing: 5) {
+                        Text(model.titleText)
+                            .font(.system(size: 24))
+                            .fontWeight(.bold)
+                        // TODO: update the image.
+                        Image(symbol: .arrowtriangleDownFill)
                     }
-                    .padding(.trailing, 30)
+                    .padding(.leading, 20)
+                    .onTapGesture { model.isMonthSelectorPrenseted = true }
+                    Spacer()
                 }
                 .padding(EdgeInsets(top: 30, leading: 0, bottom: 20, trailing: 0))
+                MonthlyStatisticsView(transactions: model.transactions)
+                    .padding(.bottom, 30)
                 MonthlyGridView(
                     year: model.currentYearMonth.year,
                     month: model.currentYearMonth.month,
@@ -135,7 +132,7 @@ struct RootView: View {
 extension RootView {
     class ViewModel: ObservableObject {
         @Published var firstDateOfMonth: Date
-        @Published var transactionsByDay: [Int: [Transaction]]
+        @Published var transactions: [Transaction]
         @Published var selectedDate: Date?
         @Published var editViewPresentation: TransactionEditView.Presentation?
         @Published var isMonthSelectorPrenseted: Bool = false
@@ -145,11 +142,15 @@ extension RootView {
             let components = Calendar.current.dateComponents([.year, .month], from: firstDateOfMonth)
             return (year: UInt(components.year ?? 0), month: UInt(components.month ?? 0))
         }
-        var totalExpenseText: String {
-            transactionsByDay.values.flatMap { $0 }.filter { $0.isExpense }.map { $0.value }.reduce(0, +).wonFormatWithSign
-        }
-        var totalIncomeText: String {
-            transactionsByDay.values.flatMap { $0 }.filter { $0.isIncome }.map { $0.value }.reduce(0, +).wonFormatWithSign
+        var transactionsByDay: [Int: [Transaction]] {
+            var transactionsByDay: [Int: [Transaction]] = [:]
+            transactions
+                .compactMap { t -> (day: Int, transaction: Transaction)? in
+                    guard let day = Calendar.current.dateComponents([.day], from: t.tradedAt).day else { return nil }
+                    return (day: day, transaction: t)
+                }
+                .forEach { transactionsByDay[$0.day, default: []].append($0.transaction) }
+            return transactionsByDay
         }
         var transactionsBySelectedDay: [Int: [Transaction]] {
             if let selectedDate = self.selectedDate,
@@ -168,18 +169,17 @@ extension RootView {
         private var cancellables: [AnyCancellable] = []
 
         init() {
-            self.firstDateOfMonth = Calendar.current.firstDateOfMonth(date: Date())
-            self.transactionsByDay = [:]
             self.transactionStorage = TransactionStorage(persistentController: PersistentController.shared)
+            self.firstDateOfMonth = Calendar.current.firstDateOfMonth(date: Date())
+            self.transactions = []
             transactionStorage.transactions.sink { [weak self] transactions in
-                var transactionsByDay: [Int: [Transaction]] = [:]
+                self?.transactions = transactions
+                var expensesByCategory: [Category: Int] = [:]
                 transactions
-                    .compactMap { t -> (day: Int, transaction: Transaction)? in
-                        guard let day = Calendar.current.dateComponents([.day], from: t.tradedAt).day else { return nil }
-                        return (day: day, transaction: t)
+                    .filter { $0.isExpense }
+                    .forEach { transaction in
+                        expensesByCategory[Category.from(raw: transaction.category), default: 0] += transaction.value
                     }
-                    .forEach { transactionsByDay[$0.day, default: []].append($0.transaction) }
-                self?.transactionsByDay = transactionsByDay
             }
             .store(in: &cancellables)
         }

@@ -18,6 +18,8 @@ enum SFSymbol: String {
     case minus = "minus"
     case minusCircle = "minus.circle"
     case minusCircleFill = "minus.circle.fill"
+    case arrowtriangleDownFill = "arrowtriangle.down.fill"
+    case calendar = "calendar"
 
     // Transportation
     case bus = "bus"
