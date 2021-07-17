@@ -18,6 +18,7 @@ enum Category: String, CaseIterable {
     case beauty
     case entertainment
     case living
+    case travel
     case etc
 }
 
@@ -48,6 +49,8 @@ extension Category {
             return "취미 • 여가"
         case .living:
             return "생활"
+        case .travel:
+            return "여행"
         case .etc:
             return "기타"
         }
@@ -75,6 +78,8 @@ extension Category {
             return SFSymbol.gamecontroller
         case .living:
             return SFSymbol.house
+        case .travel:
+            return SFSymbol.airplaneCircle
         case .etc:
             return SFSymbol.ellipsisCircle
         }

@@ -12,9 +12,12 @@ struct RootView: View {
     @ObservedObject var model: ViewModel
 
     var body: some View {
-        ZStack {
-            historyLayer
-            floatingButtonLayer
+        NavigationView {
+            ZStack {
+                historyLayer
+                floatingButtonLayer
+            }
+            .navigationBarHidden(true)
         }
         .background(
             EmptyView()
@@ -54,27 +57,30 @@ struct RootView: View {
                     Spacer()
                 }
                 .padding(EdgeInsets(top: 30, leading: 0, bottom: 20, trailing: 0))
-                MonthlyStatisticsView(transactions: model.transactions)
-                    .padding(.bottom, 30)
+                MonthlyStatisticsView(
+                    model: .init(
+                        transactionStorage: model.transactionStorage,
+                        maxNumberOfVisibleListItems: 4
+                    )
+                )
+                .padding(.bottom, 30)
                 MonthlyGridView(
                     year: model.currentYearMonth.year,
                     month: model.currentYearMonth.month,
-                    transactionsByDay: model.transactionsByDay,
+                    transactions: model.transactions,
                     selectedDate: $model.selectedDate
                 )
             }
             .listRowInsets(EdgeInsets())
             .background(Color.systemWhite)
 
-            ForEach(model.transactionsBySelectedDay.keys.sorted(by: { $0 > $1})) { day in
-                TransactionListItemDateView(
-                    date: Calendar.current.date(byAdding: DateComponents(day: day - 1), to: model.firstDateOfMonth) ?? Date()
-                )
-                .frame(height: 50)
-                .listRowInsets(EdgeInsets())
-                .background(Color.systemWhite)
+            ForEach(model.transactionsBySelectedDate.keys.sorted(by: { $0 > $1})) { date in
+                TransactionListItemDateView(date: date)
+                    .frame(height: 50)
+                    .listRowInsets(EdgeInsets())
+                    .background(Color.systemWhite)
 
-                if let transactions = model.transactionsBySelectedDay[day], !transactions.isEmpty {
+                if let transactions = model.transactionsBySelectedDate[date], !transactions.isEmpty {
                     ForEach(transactions) { transaction in
                         TransactionListItemView(transaction: transaction)
                             .listRowInsets(EdgeInsets())
@@ -131,8 +137,8 @@ struct RootView: View {
 
 extension RootView {
     class ViewModel: ObservableObject {
-        @Published var firstDateOfMonth: Date
-        @Published var transactions: [Transaction]
+        @Published var firstDateOfMonth: Date = Calendar.current.firstDateOfMonth(date: Date())
+        @Published var transactions: [Transaction] = []
         @Published var selectedDate: Date?
         @Published var editViewPresentation: TransactionEditView.Presentation?
         @Published var isMonthSelectorPrenseted: Bool = false
@@ -142,44 +148,27 @@ extension RootView {
             let components = Calendar.current.dateComponents([.year, .month], from: firstDateOfMonth)
             return (year: UInt(components.year ?? 0), month: UInt(components.month ?? 0))
         }
-        var transactionsByDay: [Int: [Transaction]] {
-            var transactionsByDay: [Int: [Transaction]] = [:]
-            transactions
-                .compactMap { t -> (day: Int, transaction: Transaction)? in
-                    guard let day = Calendar.current.dateComponents([.day], from: t.tradedAt).day else { return nil }
-                    return (day: day, transaction: t)
-                }
-                .forEach { transactionsByDay[$0.day, default: []].append($0.transaction) }
-            return transactionsByDay
-        }
-        var transactionsBySelectedDay: [Int: [Transaction]] {
-            if let selectedDate = self.selectedDate,
-               let selectedDay = Calendar.current.dateComponents([.year, .month, .day], from: selectedDate).day {
-                return [selectedDay: transactionsByDay[selectedDay]?.sorted(by: { $0.tradedAt > $1.tradedAt }) ?? []]
+        var transactionsBySelectedDate: [Date: [Transaction]] {
+            let transactionsByDate = transactions.arrangedByDate()
+            if let selectedDate = self.selectedDate {
+                return [selectedDate: transactionsByDate[selectedDate]?.sorted(by: { $0.tradedAt > $1.tradedAt }) ?? []]
             } else {
-                return transactionsByDay
+                return transactionsByDate
             }
         }
         var fromDateForMonthSelector: Date {
             Calendar.current.date(byAdding: DateComponents(year: -4), to: Date()) ?? Date()
         }
 
-        private let transactionStorage: TransactionStorage
+        let transactionStorage: TransactionStorage
         private let titleDateFormatter = DateFormatter().apply { $0.dateFormat = "LLLL, yyyy" }
         private var cancellables: [AnyCancellable] = []
 
         init() {
             self.transactionStorage = TransactionStorage(persistentController: PersistentController.shared)
-            self.firstDateOfMonth = Calendar.current.firstDateOfMonth(date: Date())
-            self.transactions = []
-            transactionStorage.transactions.sink { [weak self] transactions in
-                self?.transactions = transactions
-                var expensesByCategory: [Category: Int] = [:]
-                transactions
-                    .filter { $0.isExpense }
-                    .forEach { transaction in
-                        expensesByCategory[Category.from(raw: transaction.category), default: 0] += transaction.value
-                    }
+            self.transactionStorage.transactions.sink { [weak self] transactions in
+                guard let self = self else { return }
+                self.transactions = transactions
             }
             .store(in: &cancellables)
         }

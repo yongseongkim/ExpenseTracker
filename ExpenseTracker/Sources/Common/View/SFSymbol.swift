@@ -57,6 +57,8 @@ enum SFSymbol: String {
     // Living
     case house = "house"
     case houseFill = "house.fill"
+    // Travel
+    case airplaneCircle = "airplane"
     // ETC
     case ellipsisCircle = "ellipsis.circle"
 }

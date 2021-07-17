@@ -15,7 +15,7 @@ struct MonthlyGridView: View {
 
     @Binding var selectedDate: Date?
 
-    init(year: UInt, month: UInt, transactionsByDay: [Int: [Transaction]], selectedDate: Binding<Date?>) {
+    init(year: UInt, month: UInt, transactions: [Transaction], selectedDate: Binding<Date?>) {
         let weekdaySymbols = DateFormatter().shortWeekdaySymbols!
         let numberOfWeekdays = weekdaySymbols.count
         // firstWeekday: For Gregorian and ISO 8601 calendars, 1 is Sunday.
@@ -33,6 +33,7 @@ struct MonthlyGridView: View {
         let beginingOfWeekday = Calendar.current.component(.weekday, from: date) - 1
         let numberOfDays = Calendar.current.range(of: .day, in: .month, for: date)!.count
         let numberOfRows = Int(ceil(Double(numberOfDays + beginingOfWeekday) / 7))
+        let transactionsByDate = transactions.arrangedByDate()
         self.items = (0..<numberOfRows).map { row -> [MonthlyGridItem] in
             return (0..<numberOfWeekdays)
                 .map { column -> MonthlyGridItem in
@@ -40,8 +41,8 @@ struct MonthlyGridView: View {
                     if 0 < day, day <= numberOfDays,
                        // Actually Calendar.current.date starts from 1th, so add (day - 1).
                        let date = Calendar.current.date(byAdding: .day, value: day - 1, to: date) {
-                        let totalExpense = transactionsByDay[day]?.filter { $0.isExpense }.map { abs($0.value) }.reduce(0, +) ?? 0
-                        let totalIncome = transactionsByDay[day]?.filter { $0.isIncome }.map { abs($0.value) }.reduce(0, +) ?? 0
+                        let totalExpense = transactionsByDate[date]?.filter { $0.isExpense }.map { abs($0.value) }.reduce(0, +) ?? 0
+                        let totalIncome = transactionsByDate[date]?.filter { $0.isIncome }.map { abs($0.value) }.reduce(0, +) ?? 0
                         return .day(
                             date: date,
                             expense: totalExpense,
@@ -96,82 +97,71 @@ struct MonthlyGridView: View {
 }
 
 struct MonthlyGridView_Previews: PreviewProvider {
+    static let mockTransactions: [Transaction] = [
+        .init(
+            value: Int.random(in: -100000..<0),
+            currencyCode: "KRW",
+            category: Category.allCases.randomElement()?.rawValue,
+            title: "title",
+            detail: "detail",
+            tradedAt: DateComponents(calendar: Calendar.current, year: 2021, month: 2, day: 5).date
+        ),
+        .init(
+            value: Int.random(in: 0..<100000),
+            currencyCode: "KRW",
+            category: Category.allCases.randomElement()?.rawValue,
+            title: "title",
+            detail: "detail",
+            tradedAt: DateComponents(calendar: Calendar.current, year: 2021, month: 2, day: 5).date
+        ),
+        .init(
+            value: Int.random(in: -100000..<0),
+            currencyCode: "KRW",
+            category: Category.allCases.randomElement()?.rawValue,
+            title: "title",
+            detail: "detail",
+            tradedAt: DateComponents(calendar: Calendar.current, year: 2021, month: 2, day: 13).date
+        ),
+        .init(
+            value: Int.random(in: 0..<100000),
+            currencyCode: "KRW",
+            category: Category.allCases.randomElement()?.rawValue,
+            title: "title",
+            detail: "detail",
+            tradedAt: DateComponents(calendar: Calendar.current, year: 2021, month: 2, day: 13).date
+        ),
+        .init(
+            value: Int.random(in: -100000..<0),
+            currencyCode: "KRW",
+            category: Category.allCases.randomElement()?.rawValue,
+            title: "title",
+            detail: "detail",
+            tradedAt: DateComponents(calendar: Calendar.current, year: 2021, month: 2, day: 26).date
+        ),
+        .init(
+            value: Int.random(in: 0..<100000),
+            currencyCode: "KRW",
+            category: Category.allCases.randomElement()?.rawValue,
+            title: "title",
+            detail: "detail",
+            tradedAt: DateComponents(calendar: Calendar.current, year: 2021, month: 2, day: 18).date
+        ),
+        .init(
+            value: Int.random(in: 0..<100000),
+            currencyCode: "KRW",
+            category: Category.allCases.randomElement()?.rawValue,
+            title: "title",
+            detail: "detail",
+            tradedAt: DateComponents(calendar: Calendar.current, year: 2021, month: 2, day: 26).date
+        )
+    ]
+
     static var previews: some View {
         Group {
             MonthlyGridView(
                 year: 2021,
                 month: 2,
-                transactionsByDay: [
-                    5: [
-                        .init(
-                            value: Int.random(in: -100000..<0),
-                            currencyCode: "KRW",
-                            category: Category.allCases.randomElement()?.rawValue,
-                            title: "title",
-                            detail: "detail",
-                            tradedAt: DateComponents(calendar: Calendar.current, year: 2021, month: 2, day: 5).date
-                        ),
-                        .init(
-                            value: Int.random(in: -100000..<0),
-                            currencyCode: "KRW",
-                            category: Category.allCases.randomElement()?.rawValue,
-                            title: "title",
-                            detail: "detail",
-                            tradedAt: DateComponents(calendar: Calendar.current, year: 2021, month: 2, day: 13).date
-                        ),
-                        .init(
-                            value: Int.random(in: -100000..<0),
-                            currencyCode: "KRW",
-                            category: Category.allCases.randomElement()?.rawValue,
-                            title: "title",
-                            detail: "detail",
-                            tradedAt: DateComponents(calendar: Calendar.current, year: 2021, month: 2, day: 26).date
-                        )
-                    ],
-                    13: [
-                        .init(
-                            value: Int.random(in: 0..<100000),
-                            currencyCode: "KRW",
-                            category: Category.allCases.randomElement()?.rawValue,
-                            title: "title",
-                            detail: "detail",
-                            tradedAt: DateComponents(calendar: Calendar.current, year: 2021, month: 2, day: 5).date
-                        ),
-                        .init(
-                            value: Int.random(in: 0..<100000),
-                            currencyCode: "KRW",
-                            category: Category.allCases.randomElement()?.rawValue,
-                            title: "title",
-                            detail: "detail",
-                            tradedAt: DateComponents(calendar: Calendar.current, year: 2021, month: 2, day: 13).date
-                        ),
-                        .init(
-                            value: Int.random(in: 0..<100000),
-                            currencyCode: "KRW",
-                            category: Category.allCases.randomElement()?.rawValue,
-                            title: "title",
-                            detail: "detail",
-                            tradedAt: DateComponents(calendar: Calendar.current, year: 2021, month: 2, day: 26).date
-                        )],
-                    18: [
-                        .init(
-                            value: Int.random(in: -100000..<0),
-                            currencyCode: "KRW",
-                            category: Category.allCases.randomElement()?.rawValue,
-                            title: "title",
-                            detail: "detail",
-                            tradedAt: DateComponents(calendar: Calendar.current, year: 2021, month: 2, day: 5).date
-                        ),
-                        .init(
-                            value: Int.random(in: 0..<100000),
-                            currencyCode: "KRW",
-                            category: Category.allCases.randomElement()?.rawValue,
-                            title: "title",
-                            detail: "detail",
-                            tradedAt: DateComponents(calendar: Calendar.current, year: 2021, month: 2, day: 18).date
-                        )
-                    ]
-                ],
+                transactions: MonthlyGridView_Previews.mockTransactions,
                 selectedDate: .constant(DateComponents(calendar: Calendar.current, year: 2021, month: 2, day: 13).date ?? Date())
             )
             .previewLayout(.sizeThatFits)
@@ -179,77 +169,7 @@ struct MonthlyGridView_Previews: PreviewProvider {
             MonthlyGridView(
                 year: 2021,
                 month: 5,
-                transactionsByDay: [
-                    5: [
-                        .init(
-                            value: Int.random(in: 0..<100000),
-                            currencyCode: "KRW",
-                            category: Category.allCases.randomElement()?.rawValue,
-                            title: "title",
-                            detail: "detail",
-                            tradedAt: DateComponents(calendar: Calendar.current, year: 2021, month: 2, day: 5).date
-                        ),
-                        .init(
-                            value: Int.random(in: 0..<100000),
-                            currencyCode: "KRW",
-                            category: Category.allCases.randomElement()?.rawValue,
-                            title: "title",
-                            detail: "detail",
-                            tradedAt: DateComponents(calendar: Calendar.current, year: 2021, month: 2, day: 13).date
-                        ),
-                        .init(
-                            value: Int.random(in: 0..<100000),
-                            currencyCode: "KRW",
-                            category: Category.allCases.randomElement()?.rawValue,
-                            title: "title",
-                            detail: "detail",
-                            tradedAt: DateComponents(calendar: Calendar.current, year: 2021, month: 2, day: 26).date
-                        )
-                    ],
-                    13: [
-                        .init(
-                            value: Int.random(in: 0..<100000),
-                            currencyCode: "KRW",
-                            category: Category.allCases.randomElement()?.rawValue,
-                            title: "title",
-                            detail: "detail",
-                            tradedAt: DateComponents(calendar: Calendar.current, year: 2021, month: 2, day: 5).date
-                        ),
-                        .init(
-                            value: Int.random(in: 0..<100000),
-                            currencyCode: "KRW",
-                            category: Category.allCases.randomElement()?.rawValue,
-                            title: "title",
-                            detail: "detail",
-                            tradedAt: DateComponents(calendar: Calendar.current, year: 2021, month: 2, day: 13).date
-                        ),
-                        .init(
-                            value: Int.random(in: 0..<100000),
-                            currencyCode: "KRW",
-                            category: Category.allCases.randomElement()?.rawValue,
-                            title: "title",
-                            detail: "detail",
-                            tradedAt: DateComponents(calendar: Calendar.current, year: 2021, month: 2, day: 26).date
-                        )],
-                    18: [
-                        .init(
-                            value: Int.random(in: 0..<100000),
-                            currencyCode: "KRW",
-                            category: Category.allCases.randomElement()?.rawValue,
-                            title: "title",
-                            detail: "detail",
-                            tradedAt: DateComponents(calendar: Calendar.current, year: 2021, month: 2, day: 5).date
-                        ),
-                        .init(
-                            value: Int.random(in: 0..<100000),
-                            currencyCode: "KRW",
-                            category: Category.allCases.randomElement()?.rawValue,
-                            title: "title",
-                            detail: "detail",
-                            tradedAt: DateComponents(calendar: Calendar.current, year: 2021, month: 2, day: 18).date
-                        )
-                    ]
-                ],
+                transactions: MonthlyGridView_Previews.mockTransactions,
                 selectedDate: .constant(DateComponents(calendar: Calendar.current, year: 2021, month: 5, day: 13).date ?? Date())
             )
             .previewLayout(.sizeThatFits)
