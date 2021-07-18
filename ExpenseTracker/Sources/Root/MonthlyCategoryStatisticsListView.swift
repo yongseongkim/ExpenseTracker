@@ -36,28 +36,8 @@ struct MonthlyCategoryStatisticsListItemView: View {
     }
 }
 
-struct MonthlyCategoryStatisticsListView: View {
-    let items: [MonthlyCategoryStatisticsListItem]
-    let listener: Listener
-
-    var body: some View {
-        VStack(spacing: 0) {
-            ForEach(items) { item in
-                MonthlyCategoryStatisticsListItemView(item: item)
-                    .onTapGesture { listener.onTapped(item) }
-            }
-        }
-    }
-}
-
-extension MonthlyCategoryStatisticsListView {
-    struct Listener {
-        let onTapped: (MonthlyCategoryStatisticsListItem) -> Void
-    }
-}
-
-struct MonthlyCategoryStatisticsListView_Previews: PreviewProvider {
+struct MonthlyCategoryStatisticsListItemView_Previews: PreviewProvider {
     static var previews: some View {
-        MonthlyCategoryStatisticsListView(items: [], listener: .init(onTapped: { _ in }))
+        MonthlyCategoryStatisticsListItemView(item: .init(percent: 30, expense: 17900, category: .beauty, color: .blue))
     }
 }
