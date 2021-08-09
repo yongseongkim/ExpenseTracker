@@ -57,6 +57,7 @@ struct RootView: View {
             }
 
             Section {
+                // MARK: Chart
                 HStack {
                     VStack {
                         DonutChart(
@@ -81,12 +82,13 @@ struct RootView: View {
                 .listRowInsets(EdgeInsets())
                 .background(Color.systemWhite)
 
+                // MARK: Categorized Expenses
                 ForEach(Array(model.items.prefix(4))) { item in
                     ZStack {
                         MonthlyCategoryStatisticsListItemView(item: item)
                         NavigationLink(
                             destination: MonthlyCategorizedTransactionListView(
-                                model: .init(category: item.category, transactionStorage: .shared)
+                                model: .init(category: item.category, transactionStorage: model.transactionStorage)
                             ),
                             label: { EmptyView() }
                         )
@@ -96,7 +98,14 @@ struct RootView: View {
                     .background(Color.systemWhite)
                 }
 
-                NavigationLink(destination: MonthlyCategorizedTransactionListView(model: .init(category: .etc, transactionStorage: .shared))) {
+                NavigationLink(
+                    destination: MonthlyCategoryStatisticsListView(
+                        model: .init(
+                            items: model.items,
+                            transactionStorage: model.transactionStorage
+                        )
+                    )
+                ) {
                     HStack {
                         Spacer()
                         Text("자세히 보기")
@@ -108,6 +117,7 @@ struct RootView: View {
             }
 
             Section {
+                // MARK: Calendar
                 MonthlyGridView(
                     year: model.currentYearMonth.year,
                     month: model.currentYearMonth.month,
@@ -116,6 +126,7 @@ struct RootView: View {
                 )
                 .listRowInsets(EdgeInsets(top: 20, leading: 0, bottom: 0, trailing: 0))
 
+                // MARK: Transaction List
                 ForEach(model.transactionsBySelectedDate.keys.sorted(by: { $0 > $1})) { date in
                     TransactionListItemDateView(date: date)
                         .frame(height: 50)
@@ -142,6 +153,10 @@ struct RootView: View {
                         }
                     }
                 }
+
+                // MARK: Extra Space
+                Color.systemWhite.opacity(0)
+                    .frame(height: 50)
             }
         }
         .listStyle(PlainListStyle())

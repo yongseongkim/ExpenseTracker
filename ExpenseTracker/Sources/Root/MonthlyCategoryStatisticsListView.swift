@@ -41,3 +41,43 @@ struct MonthlyCategoryStatisticsListItemView_Previews: PreviewProvider {
         MonthlyCategoryStatisticsListItemView(item: .init(percent: 30, expense: 17900, category: .beauty, color: .blue))
     }
 }
+
+struct MonthlyCategoryStatisticsListView: View {
+    @ObservedObject var model: ViewModel
+
+    var body: some View {
+        List {
+            ForEach(model.items) { item in
+                ZStack {
+                    MonthlyCategoryStatisticsListItemView(item: item)
+                    NavigationLink(
+                        destination: MonthlyCategorizedTransactionListView(
+                            model: .init(
+                                category: item.category,
+                                transactionStorage: model.transactionStorage
+                            )
+                        ),
+                        label: { EmptyView() }
+                    )
+                    .opacity(0) // To hide navigation link arrow.
+                }
+                .listRowInsets(EdgeInsets())
+                .background(Color.systemWhite)
+            }
+
+        }
+    }
+}
+
+extension MonthlyCategoryStatisticsListView {
+    class ViewModel: ObservableObject {
+        let items: [MonthlyCategoryStatisticsListItem]
+        let transactionStorage: TransactionStorage
+
+        init(items: [MonthlyCategoryStatisticsListItem], transactionStorage: TransactionStorage) {
+            print(items.count)
+            self.items = items
+            self.transactionStorage = transactionStorage
+        }
+    }
+}

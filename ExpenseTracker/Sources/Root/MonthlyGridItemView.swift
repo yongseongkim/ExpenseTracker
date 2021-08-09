@@ -45,13 +45,14 @@ struct MonthlyGridItemView: View {
                     Text(formatter.string(from: date))
                         .font(.system(size: 13))
                         .fontWeight(.bold)
-                        .foregroundColor((isToday && !isSelected) ? .blue : .systemBlack)
+                        .foregroundColor((isToday && isSelected.not()) ? .blue : .systemBlack)
                 }
                 .frame(width: 26, height: 26)
                 Spacer(minLength: 0)
                 content(date: date, expense: expense, income: income)
                 Spacer(minLength: 0)
             }
+            .opacity(expense == 0 && income == 0 && isToday.not() ? 0.6 : 1)
         }
     }
 
