@@ -46,7 +46,8 @@ struct MonthlyGridView: View {
                         return .day(
                             date: date,
                             expense: totalExpense,
-                            income: totalIncome
+                            income: totalIncome,
+                            isToday: Calendar.current.isDateInToday(date)
                         )
                     }
                     return .space
@@ -86,7 +87,7 @@ struct MonthlyGridView: View {
     }
 
     private func select(item: MonthlyGridItem) {
-        if case .day(let date, _, _) = item {
+        if case .day(let date, _, _, _) = item {
             if self.selectedDate == date {
                 self.selectedDate = nil
             } else {

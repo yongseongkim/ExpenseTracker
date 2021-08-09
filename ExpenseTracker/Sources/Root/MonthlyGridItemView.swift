@@ -9,11 +9,11 @@ import SwiftUI
 
 enum MonthlyGridItem {
     case space
-    case day(date: Date, expense: Int, income: Int)
+    case day(date: Date, expense: Int, income: Int, isToday: Bool)
 
     func isSame(otherDate: Date?) -> Bool {
         switch self {
-        case .day(let date, _, _):
+        case .day(let date, _, _, _):
             return otherDate == date
         default:
             return false
@@ -35,7 +35,7 @@ struct MonthlyGridItemView: View {
         switch item {
         case .space:
             Color.systemWhite.opacity(0)
-        case .day(let date, let expense, let income):
+        case .day(let date, let expense, let income, let isToday):
             VStack(alignment: .center, spacing: 0) {
                 ZStack {
                     if isSelected {
@@ -45,6 +45,7 @@ struct MonthlyGridItemView: View {
                     Text(formatter.string(from: date))
                         .font(.system(size: 13))
                         .fontWeight(.bold)
+                        .foregroundColor((isToday && !isSelected) ? .blue : .systemBlack)
                 }
                 .frame(width: 26, height: 26)
                 Spacer(minLength: 0)
@@ -85,7 +86,8 @@ struct MonthlyGridItemView_Previews: PreviewProvider {
                 item: .day(
                     date: Date(),
                     expense: 10000,
-                    income: 10000
+                    income: 10000,
+                    isToday: false
                 )
             )
             .previewLayout(.fixed(width: 50, height: 56))
@@ -93,7 +95,17 @@ struct MonthlyGridItemView_Previews: PreviewProvider {
                 item: .day(
                     date: Date(),
                     expense: 10000,
-                    income: 10000
+                    income: 10000,
+                    isToday: true
+                )
+            )
+            .previewLayout(.fixed(width: 50, height: 56))
+            MonthlyGridItemView(
+                item: .day(
+                    date: Date(),
+                    expense: 10000,
+                    income: 10000,
+                    isToday: false
                 ),
                 isSelected: true
             )
