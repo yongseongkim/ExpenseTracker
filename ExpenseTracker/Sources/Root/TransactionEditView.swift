@@ -211,7 +211,7 @@ extension TransactionEditView {
                 self.listener = listener
             } else {
                 self.value = abs(value ?? 0)
-                self.isExpense = isExpense ?? false
+                self.isExpense = isExpense ?? true
                 self.selectedCategory = selectedCategory ?? .etc
                 self.title = title ?? ""
                 self.detail = detail ?? ""
@@ -225,9 +225,7 @@ extension TransactionEditView {
         }
 
         func confirm() {
-            if title.isEmpty || detail.isEmpty || value == 0 {
-                return
-            }
+            guard title.isNotEmpty && value > 0 else { return }
             let target: Transaction = .init(
                 id: targetTransactionId,
                 value: isExpense ? -abs(value) : abs(value),

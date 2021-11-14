@@ -12,6 +12,10 @@ extension String {
         return components(separatedBy: CharacterSet.decimalDigits.inverted)
             .joined()
     }
+
+    var isNotEmpty: Bool {
+        return isEmpty.not()
+    }
 }
 
 extension String: Identifiable {
