@@ -18,7 +18,6 @@ struct MonthlyCategorizedTransactionListView: View {
                     .frame(height: 50)
                     .listRowInsets(EdgeInsets())
                     .background(Color.systemWhite)
-
                 if let transactions = model.transactionsByDate[date], !transactions.isEmpty {
                     ForEach(transactions) { transaction in
                         TransactionListItemView(transaction: transaction)
@@ -29,6 +28,8 @@ struct MonthlyCategorizedTransactionListView: View {
                 }
             }
         }
+        .listStyle(PlainListStyle())
+        .navigationTitle(model.category.displayName)
     }
 }
 

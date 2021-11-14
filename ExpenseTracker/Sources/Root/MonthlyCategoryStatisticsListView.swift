@@ -67,6 +67,8 @@ struct MonthlyCategoryStatisticsListView: View {
             }
 
         }
+        .listStyle(PlainListStyle())
+        .navigationTitle("이달의 소비 카테고리")
     }
 }
 
