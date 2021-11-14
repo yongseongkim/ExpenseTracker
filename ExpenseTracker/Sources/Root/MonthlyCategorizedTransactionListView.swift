@@ -23,6 +23,7 @@ struct MonthlyCategorizedTransactionListView: View {
                     ForEach(transactions) { transaction in
                         TransactionListItemView(transaction: transaction)
                             .listRowInsets(EdgeInsets())
+                            .listRowSeparator(.hidden)
                             .background(Color.systemWhite)
                     }
                 }

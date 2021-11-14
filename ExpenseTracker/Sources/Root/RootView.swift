@@ -53,7 +53,7 @@ struct RootView: View {
                     Spacer()
                 }
                 .listRowInsets(EdgeInsets())
-                .padding(EdgeInsets(top: 20, leading: 0, bottom: 10, trailing: 0))
+                .listRowSeparator(.hidden)
             }
 
             Section {
@@ -79,7 +79,7 @@ struct RootView: View {
                     .frame(minWidth: 0, maxWidth: .infinity)
                 }
                 .padding([.top, .bottom], 15)
-                .listRowInsets(EdgeInsets())
+                .listRowSeparator(.hidden)
                 .background(Color.systemWhite)
 
                 // MARK: Categorized Expenses
@@ -95,6 +95,7 @@ struct RootView: View {
                         .opacity(0) // To hide navigation link arrow.
                     }
                     .listRowInsets(EdgeInsets())
+                    .listRowSeparator(.hidden)
                     .background(Color.systemWhite)
                 }
 
@@ -125,6 +126,7 @@ struct RootView: View {
                     selectedDate: $model.selectedDate
                 )
                 .listRowInsets(EdgeInsets(top: 20, leading: 0, bottom: 0, trailing: 0))
+                .listRowSeparator(.hidden)
 
                 // MARK: Transaction List
                 ForEach(model.transactionsBySelectedDate.keys.sorted(by: { $0 > $1})) { date in
@@ -137,6 +139,7 @@ struct RootView: View {
                         ForEach(transactions) { transaction in
                             TransactionListItemView(transaction: transaction)
                                 .listRowInsets(EdgeInsets())
+                                .listRowSeparator(.hidden)
                                 .background(Color.systemWhite)
                                 .onTapGesture {
                                     model.editViewPresentation = .edit(
@@ -160,6 +163,7 @@ struct RootView: View {
             }
         }
         .listStyle(PlainListStyle())
+        .listRowSeparator(.hidden)
     }
 
     var floatingButtonLayer: some View {

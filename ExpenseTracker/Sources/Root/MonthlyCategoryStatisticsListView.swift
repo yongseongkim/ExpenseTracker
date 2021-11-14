@@ -62,6 +62,7 @@ struct MonthlyCategoryStatisticsListView: View {
                     .opacity(0) // To hide navigation link arrow.
                 }
                 .listRowInsets(EdgeInsets())
+                .listRowSeparator(.hidden)
                 .background(Color.systemWhite)
             }
 
