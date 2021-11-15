@@ -21,6 +21,8 @@ enum SFSymbol: String {
     case arrowtriangleDownFill = "arrowtriangle.down.fill"
     case calendar = "calendar"
 
+    // Meal
+    case forkKnife = "fork.knife"
     // Transportation
     case bus = "bus"
     case busFill = "bus.fill"
@@ -47,8 +49,6 @@ enum SFSymbol: String {
     // Gift
     case gift = "gift"
     case giftFill = "gift.fill"
-    // Meal
-    case wake = "wake"
     // Beauty
     case scissors = "scissors"
     // Entertainment
@@ -58,9 +58,10 @@ enum SFSymbol: String {
     case house = "house"
     case houseFill = "house.fill"
     // Travel
-    case airplaneCircle = "airplane"
+    case airplane = "airplane"
     // ETC
     case ellipsisCircle = "ellipsis.circle"
+    case ellipsisCircleFill = "ellipsis.circle.fill"
 }
 
 extension Image {

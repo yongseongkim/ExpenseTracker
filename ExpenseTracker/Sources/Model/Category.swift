@@ -59,29 +59,29 @@ extension Category {
     var symbol: SFSymbol {
         switch self {
         case .meal:
-            return SFSymbol.wake
+            return SFSymbol.forkKnife
         case .shopping:
-            return SFSymbol.cart
+            return SFSymbol.cartFill
         case .transportation:
-            return SFSymbol.bus
+            return SFSymbol.busFill
         case .communication:
-            return SFSymbol.phone
+            return SFSymbol.phoneFill
         case .hospital:
-            return SFSymbol.cross
+            return SFSymbol.crossFill
         case .gift:
-            return SFSymbol.gift
+            return SFSymbol.giftFill
         case .education:
-            return SFSymbol.graduationcap
+            return SFSymbol.graduationcapFill
         case .beauty:
             return SFSymbol.scissors
         case .entertainment:
-            return SFSymbol.gamecontroller
+            return SFSymbol.gamecontrollerFill
         case .living:
-            return SFSymbol.house
+            return SFSymbol.houseFill
         case .travel:
-            return SFSymbol.airplaneCircle
+            return SFSymbol.airplane
         case .etc:
-            return SFSymbol.ellipsisCircle
+            return SFSymbol.ellipsisCircleFill
         }
     }
 }
