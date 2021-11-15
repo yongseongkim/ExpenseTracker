@@ -25,13 +25,13 @@ struct TransactionListView: View {
         List {
             ForEach(Array(transactionsByDate.keys)) { key in
                 TransactionListItemDateView(date: key)
-                    .frame(height: 50)
                     .listRowInsets(EdgeInsets())
                     .background(Color.systemWhite)
                 if let transactions = transactionsByDate[key], !transactions.isEmpty {
                     ForEach(transactions) { transaction in
                         TransactionListItemView(transaction: transaction)
                             .listRowInsets(EdgeInsets())
+                            .listRowSeparator(.hidden)
                             .background(Color.systemWhite)
                             .onTapGesture { listener.onItemSelected(transaction) }
                     }

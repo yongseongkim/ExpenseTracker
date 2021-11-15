@@ -226,17 +226,17 @@ extension TransactionEditView {
 
         func confirm() {
             guard title.isNotEmpty && value > 0 else { return }
-            let target: Transaction = .init(
-                id: targetTransactionId,
-                value: isExpense ? -abs(value) : abs(value),
-                currencyCode: "KRW",
-                category: selectedCategory.rawValue,
-                title: title,
-                detail: detail,
-                tradedAt: tradedAt
+            listener.onConfirmed(
+                .init(
+                    id: targetTransactionId,
+                    value: isExpense ? -abs(value) : abs(value),
+                    currencyCode: "KRW",
+                    category: selectedCategory.rawValue,
+                    title: title,
+                    detail: detail,
+                    tradedAt: tradedAt
+                )
             )
-            TransactionStorage.shared.upsert(transaction: target)
-            listener.onConfirmed(target)
         }
     }
 

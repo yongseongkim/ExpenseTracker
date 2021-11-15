@@ -17,10 +17,11 @@ struct TransactionListItemDateView: View {
         HStack {
             Text("\(dateFormaater.string(from: date))")
                 .font(.system(size: 15))
-                .padding([.leading, .trailing], 25)
+                .padding([.leading, .trailing], 20)
             Spacer()
         }
-        .padding(.top, 20)
+        .padding(.bottom, 2)
+        .frame(height: 32, alignment: .bottom)
     }
 }
 
@@ -44,11 +45,13 @@ struct TransactionListItemView: View {
                     .foregroundColor(.systemBlack)
                 Text(transaction.detail ?? "")
                     .font(.system(size: 13))
+                    .visibleOrGone(transaction.detail?.isNotEmpty ?? false)
             }
             Spacer()
         }
-        .padding([.top, .bottom], 6)
-        .padding([.leading, .trailing], 15)
+        .padding([.leading, .trailing], 20)
+        .frame(height: 72, alignment: .center)
+        .background(Color.systemWhite)
     }
 }
 
@@ -56,6 +59,8 @@ struct TransactionListItemView: View {
 struct TransactionListItemView_Previews: PreviewProvider {
     static var previews: some View {
         Group {
+            TransactionListItemDateView(date: Date())
+                .previewLayout(.sizeThatFits)
             TransactionListItemView(
                 transaction: .init(
                     value: -19900,
@@ -66,6 +71,8 @@ struct TransactionListItemView_Previews: PreviewProvider {
                     tradedAt: DateComponents(calendar: .current, year: 2021, month: 3, day: 6, hour: 21, minute: 35).date!
                 )
             )
+            .previewLayout(.sizeThatFits)
+            .environment(\.colorScheme, .light)
             TransactionListItemView(
                 transaction: .init(
                     value: 19710,
@@ -76,6 +83,20 @@ struct TransactionListItemView_Previews: PreviewProvider {
                     tradedAt: DateComponents(calendar: .current, year: 2021, month: 3, day: 1, hour: 22, minute: 40).date!
                 )
             )
+            .previewLayout(.sizeThatFits)
+            .environment(\.colorScheme, .light)
+            TransactionListItemView(
+                transaction: .init(
+                    value: 25000,
+                    currencyCode: "KRW",
+                    category: Category.meal.rawValue,
+                    title: "깐부치킨",
+                    detail: "",
+                    tradedAt: DateComponents(calendar: .current, year: 2021, month: 3, day: 1, hour: 22, minute: 40).date!
+                )
+            )
+            .previewLayout(.sizeThatFits)
+            .environment(\.colorScheme, .dark)
         }
     }
 }

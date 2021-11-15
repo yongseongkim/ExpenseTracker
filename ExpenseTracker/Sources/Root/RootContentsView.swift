@@ -115,7 +115,10 @@ struct RootContentsView: View {
                                         transaction: transaction,
                                         listener: .init(
                                             onCancelled: { model.editViewPresentation = nil },
-                                            onConfirmed: { _ in model.editViewPresentation = nil }
+                                            onConfirmed: {
+                                                model.transactionStorage.upsert(transaction: $0)
+                                                model.editViewPresentation = nil
+                                            }
                                         )
                                     )
                                 }
