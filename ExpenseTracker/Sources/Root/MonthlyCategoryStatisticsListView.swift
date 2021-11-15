@@ -78,7 +78,6 @@ extension MonthlyCategoryStatisticsListView {
         let transactionStorage: TransactionStorage
 
         init(items: [MonthlyCategoryStatisticsListItem], transactionStorage: TransactionStorage) {
-            print(items.count)
             self.items = items
             self.transactionStorage = transactionStorage
         }

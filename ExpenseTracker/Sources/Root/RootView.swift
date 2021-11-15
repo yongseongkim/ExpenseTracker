@@ -28,7 +28,8 @@ struct RootView: View {
                             current: model.firstDateOfMonth
                         ),
                         listener: .init(
-                            onSelected: { model.select(month: $0) }
+                            onSelected: { model.select(month: $0) },
+                            onCanceled: { model.isMonthSelectorPresented = false }
                         )
                     )
                 }
