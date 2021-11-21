@@ -20,8 +20,8 @@ extension Color {
 }
 
 extension UIColor {
-    static var systemBlack: UIColor { UIColor(named: "systemBlack")! }
-    static var systemWhite: UIColor { UIColor(named: "systemWhite")! }
+    static var systemBlack: UIColor { ExpenseTrackerAsset.systemBlack.color }
+    static var systemWhite: UIColor { ExpenseTrackerAsset.systemWhite.color }
 
     convenience init(red: Int, green: Int, blue: Int, a: CGFloat = 1.0) {
         self.init(

@@ -19,6 +19,7 @@ struct RootView: View {
             }
             .navigationBarHidden(true)
         }
+        .accentColor(.systemBlack)
         .background(
             EmptyView()
                 .sheet(isPresented: $model.isMonthSelectorPresented) {
